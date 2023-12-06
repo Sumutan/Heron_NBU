@@ -1,0 +1,52 @@
+几个关键路径：
+    云上关键路径
+        云上训练集存放位置         root_folder_path = "/home/ma-user/modelarts/inputs/data_dir_0/"
+                                                /-videos_train
+                                                /-videos_val
+                                                /-kinetics400_train_list_videos.txt
+                                                /-kinetics400_val_list_videos.txt
+                                                /-train.csv
+                                                /-val.csv
+                                                /-test.csv
+        云上训练输出的模型存放位置   /cache/train
+        作业代码                  /home/ma-user/modelarts/user-job-dir/heron_-nbu
+        npu日志                  /home/ma-user/modelarts/log
+
+    obs路径
+        代码      obs://heron-nbu/code/heron_-nbu/
+        数据集     obs://kinetics400/K400-full/
+
+        训练输出保存位置
+            模型  obs://heron-nbu/output/作业名/
+            日志  obs://heron-nbu/log/作业名/
+
+    jupyter notebook开发环境路径
+        训练集         /home/ma-user/work/dataset/k400clean/
+        输出文件夹      /home/ma-user/work/code/heron_-nbu/output
+
+数据准备全流程
+    tool/K400dataset中的脚本制作k400目录文件
+
+训练作业全流程：
+    1. tool/K400dataset中的脚本制作k400目录文件，目前的版本（已有所有文件的文件名与标签）使用add_folderPth.py
+       statistics.py 检查数据集完整性
+    2. 检查配置文件
+       数据与代码上传OBS
+    3. 运行训练启动脚本
+    4. 下载所有训练日志输出，保存在一个文件夹下，然后运行tool/log_filter/merge_trainLog.py 合并所有日志得到单视角acc
+    5. 在云上通过run_with_mpi.sh运行分布式多视角eval脚本，得到多视角精度
+    6. 多视角得到的device/output中的文件送入merge_result.py进行合并 计算多视角acc
+    7. 用log_filter/log_filter.py绘制训练曲线
+
+保存训练作业中间训练结果:
+    cd /cache
+    python
+    obs_path = 'obs://heron-mask/output/pretrain_only_surveillance/train'
+    workspace_path = '/cache/train'
+    import moxing as mox
+    mox.file.copy_parallel(workspace_path, obs_path)
+
+
+
+
+

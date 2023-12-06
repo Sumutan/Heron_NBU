@@ -1,0 +1,48 @@
+# mindspore参数
+seed: 2022
+use_parallel: False
+device_id: 0
+mode: "PYNATIVE_MODE"
+device_target: "Ascend"
+max_call_depth: 10000
+save_graphs: False
+parallel_mode: "DATA_PARALLEL"
+sink_mode: False
+gradients_mean: True
+
+# 数据集参数
+path_to_dataset_csv: "config/video_dataset_train.csv"
+num_workers: 10
+sampling_rate: 4
+repeat_aug: 2
+jitter_aspect_relative: [0.75, 1.3333]
+jitter_scales_relative: [0.5, 1.0]
+
+# 模型参数
+model: "mae_vit_base_patch16"
+image_size: 224
+num_frames: 16
+
+# 训练参数
+batch_size: 4
+epochs: 10
+per_step_size: 0
+
+# 学习率参数
+base_lr: 0.00015
+start_learning_rate: 0.
+end_learning_rate: 0.000000000001
+warmup_epochs: 1
+beta1: 0.9
+beta2: 0.95
+weight_decay: 0.05
+
+# 损失函数放缩
+loss_scale: 1024
+use_dynamic_loss_scale: True
+
+# 保存模型
+use_ckpt: ""
+save_ckpt_epochs: 10
+prefix: 'model'
+save_dir: './output/'

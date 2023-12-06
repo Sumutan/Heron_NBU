@@ -1,0 +1,113 @@
+# mindspore参数
+seed: 2022
+use_parallel: False
+device_id: 1
+mode: "PYNATIVE_MODE" # "PYNATIVE_MODE" "GRAPH_MODE"
+device_target: "Ascend"
+max_call_depth: 10000
+save_graphs: False
+parallel_mode: "DATA_PARALLEL"
+sink_mode: False
+gradients_mean: False
+
+eval: True
+test: False
+
+# 数据集参数
+path_to_data_dir: '/home/ma-user/work/dataset/k400-full'
+num_classes: 400
+num_workers: 1
+sampling_rate: 4
+num_frames: 16
+train_crop_size: 224
+jitter_scales_relative: [0.5, 1.0]
+jitter_aspect_relative: [0.75, 1.3333]
+train_random_horizontal_flip: 0.5
+test_num_ensemble_views: 5
+test_num_spatial_crops: 3
+short_side_size: 224
+mean: [0.45, 0.45, 0.45]
+std: [0.225, 0.225, 0.225]
+
+repeat_aug: 1
+use_offset_sampling: True
+
+interpolation: "BICUBIC"
+auto_augment: "rand-m7-n4-mstd0.5-inc1"
+
+reprob: 0.25
+remode: 'pixel'
+recount: 1
+resplit: False
+
+mixup: 0.8
+cutmix: 1.0
+cutmix_minmax: 'None'
+mixup_prob: 1.0
+mixup_switch_prob: 0.5
+mixup_mode: 'batch'
+
+# 模型参数
+model: "mae_vit_base_patch16"
+input_size: 224
+patch_size: 16
+embed_dim: 768
+depth: 12
+num_heads: 12
+mlp_ratio: 4.0
+norm_layer: "LayerNorm"
+
+decoder_embed_dim: 512
+decoder_depth: 4
+decoder_num_heads: 16
+
+norm_pix_loss: True
+num_frames: 16
+t_patch_size: 2
+no_qkv_bias: False
+trunc_init: True
+sep_pos_embed: True
+cls_embed: True
+pred_t_dim: 16
+drop_rate: 0.0
+attn_drop_rate: 0.0
+drop_path_rate: 0.2
+fc_drop_rate: 0.5
+freeze_encoder: False
+use_mean_pooling: True
+init_scale: 0.001
+layer_decay: 0.7
+
+resume: ""
+
+# 训练参数
+batch_size: 8
+epochs: 100
+per_step_size: 0
+accum_iter: 1
+label_smoothing: 0.1
+
+# 优化器参数
+opt: 'adamw'
+beta1: 0.9
+beta2: 0.999
+weight_decay: 0.05
+weight_decay_end: 0.0
+eps: 1.0e-8
+
+# 学习率参数
+base_lr: 5.0e-4
+start_learning_rate: 0.
+end_learning_rate: 1.0e-5
+warmup_epochs: 5
+warmup_steps: -1
+
+# 损失函数放缩
+loss_scale: 1024
+use_dynamic_loss_scale: True
+
+# 保存模型
+use_ckpt: ""
+save_ckpt_epochs: 3
+prefix: 'model'
+save_dir: './output/'

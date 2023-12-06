@@ -1,0 +1,75 @@
+# mindspore参数
+seed: 2022
+use_parallel: True
+device_id: 1
+mode: "GRAPH_MODE" # "PYNATIVE_MODE" "GRAPH_MODE"
+device_target: "Ascend"
+max_call_depth: 10000
+save_graphs: False
+parallel_mode: "DATA_PARALLEL"
+sink_mode: False
+gradients_mean: False
+
+# 数据集参数
+path_to_data_dir: "/home/ma-user/work/dataset/k400"
+num_workers: 8
+sampling_rate: 4
+repeat_aug: 1
+jitter_aspect_relative: [0.75, 1.3333]
+jitter_scales_relative: [0.5, 1.0]
+train_random_horizontal_flip: 0.5
+
+mean: [0.45, 0.45, 0.45]
+std: [0.225, 0.225, 0.225]
+
+mask_ratio: 0.9
+
+# 模型参数
+model: "mae_vit_large_patch16"
+input_size: 224
+patch_size: 16
+embed_dim: 1024
+depth: 24
+num_heads: 16
+mlp_ratio: 4.0
+norm_layer: "LayerNorm"
+
+decoder_embed_dim: 512
+decoder_depth: 4
+decoder_num_heads: 16
+
+norm_pix_loss: True
+num_frames: 16
+t_patch_size: 2
+no_qkv_bias: False
+trunc_init: False
+sep_pos_embed: True
+cls_embed: True
+pred_t_dim: 8
+
+resume: ""
+
+# 训练参数
+batch_size: 12
+epochs: 1
+per_step_size: 0
+accum_iter: 1
+
+# 学习率参数
+base_lr: 1.6e-3
+start_learning_rate: 0.
+end_learning_rate: 0.000000000001
+warmup_epochs: 5
+beta1: 0.9
+beta2: 0.95
+weight_decay: 0.05
+
+# 损失函数放缩
+loss_scale: 1024
+use_dynamic_loss_scale: True
+
+# 保存模型
+use_ckpt: "" #"/home/zgw-194/zsz/mae_st_ms/ckpt/video_mae_pretrain_vit_large_k400.ckpt" #"/home/zgw-194/zsz/mae_st_ms/ckpt/video_mae_pretrain_vit_large_k400.ckpt"
+save_ckpt_epochs: 1
+prefix: 'model'
+save_dir: './output/'

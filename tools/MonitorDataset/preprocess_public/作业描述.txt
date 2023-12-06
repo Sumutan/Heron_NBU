@@ -1,0 +1,3 @@
+1.dev->mp4 , 并resize->（565,320）
+2.抽取动态片段  Extract dynamic fragment.py
+3.crop裁出脱敏部分

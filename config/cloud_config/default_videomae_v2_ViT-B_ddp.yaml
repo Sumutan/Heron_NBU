@@ -1,0 +1,120 @@
+# mindspore参数
+seed: 2022
+use_parallel: True
+device_id: 1
+mode: "GRAPH_MODE" # "PYNATIVE_MODE" "GRAPH_MODE"
+device_target: "Ascend"
+max_call_depth: 10000
+save_graphs: False
+parallel_mode: "DATA_PARALLEL"
+sink_mode: False
+gradients_mean: False
+enable_parallel_optimizer: False
+gradient_accumulation_shard: True
+parallel_optimizer_threshold: 24
+
+# Builtin Configurations(DO NOT CHANGE THESE CONFIGURATIONS unless you know exactly what you are doing)
+train_url: ""
+output_path: "/cache/train"
+OBS_output_path: "obs://heron-nbu/tmp/output"
+
+save_dir: "/cache/train"      #train log save path
+#ckpt_path: '/cache/train/'
+
+# 数据集参数
+path_to_data_dir: "/home/ma-user/modelarts/inputs/data_dir_0/"     #k400
+#path_to_data_dir: "/home/ma-user/modelarts/inputs/data_dir_0/withMonitorCsv"      #k400 with monitor
+
+num_workers: 16
+sampling_rate: 4
+train_crop_size: 224
+jitter_scales_relative: [0.5, 1.0]
+jitter_aspect_relative: [0.75, 1.3333]
+train_random_horizontal_flip: 0.5
+test_num_ensemble_views: 5
+test_num_spatial_crops: 3
+
+mean: [0.485, 0.456, 0.406]
+std: [0.229, 0.224, 0.225]
+
+repeat_aug: 1
+use_offset_sampling: True
+
+mask_strategy: 'random'
+mask_ratio: 0.9
+
+interpolation: "BICUBIC"
+auto_augment: "rand-m7-n4-mstd0.5-inc1"
+reprob: 0.25
+remode: 'pixel'
+recount: 1
+resplit: False
+
+mixup: 0.8
+cutmix: 1.0
+cutmix_minmax: 'None'
+mixup_prob: 1.0
+mixup_switch_prob: 0.5
+mixup_mode: 'batch'
+
+# 模型参数
+model: "mae_vit_base_patch16"
+input_size: 224
+patch_size: 16
+encoder_embed_dim: 768
+encoder_depth: 12
+encoder_num_heads: 12
+encoder_num_classes: 0
+mlp_ratio: 4.0
+
+decoder_embed_dim: 384
+decoder_depth: 4
+decoder_num_heads: 6
+decoder_num_classes: 1536
+
+norm_pix_loss: True
+num_frames: 16
+t_patch_size: 2
+qkv_bias: True
+trunc_init: False
+sep_pos_embed: True
+cls_embed: False
+pred_t_dim: 16
+drop_rate: 0.0
+attn_drop_rate: 0.0
+drop_path_rate: 0.2
+fc_drop_rate: 0.5
+freeze_encoder: False
+use_mean_pooling: True
+init_scale: 0.001
+layer_decay: 0.7
+
+resume: ""
+
+# 训练参数
+batch_size: 16  #total:1024
+epochs: 800
+epochstart: 0
+per_step_size: 0
+accum_iter: 1
+label_smoothing: 0.1
+
+# 学习率参数
+base_lr: 1.6e-3   #1.5e-4 in paper ; 1.6e-3 in log
+start_learning_rate: 0.
+end_learning_rate: 1.0e-5
+warmup_epochs: 40
+beta1: 0.9
+beta2: 0.95
+weight_decay: 0.05
+
+# 损失函数放缩
+loss_scale: 1024
+use_dynamic_loss_scale: True
+
+# 保存模型
+use_ckpt: "pretrain-model-760_457.ckpt" #"/home/ma-user/work/ckpt/ViT-B_ep1600_pretrain_k400.ckpt"  # pretrain
+#use_ckpt: "/home/ma-user/work/output/model-1_1_encoder.ckpt"  # finetune
+save_ckpt_epochs: 20
+prefix: 'model'
+#save_dir: './output/'

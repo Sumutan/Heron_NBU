@@ -1,0 +1,538 @@
+net.patch_embed.proj.weight (768, 3, 2, 16, 16) Float32
+net.patch_embed.proj.bias (768,) Float32
+net.blocks.0.norm1.gamma (768,) Float32
+net.blocks.0.norm1.beta (768,) Float32
+net.blocks.0.attn.q_bias (768,) Float16
+net.blocks.0.attn.v_bias (768,) Float16
+net.blocks.0.attn.qkv.bias (2304,) Float32
+net.blocks.0.attn.proj.bias (768,) Float32
+net.blocks.0.norm2.gamma (768,) Float32
+net.blocks.0.norm2.beta (768,) Float32
+net.blocks.0.mlp.fc1.bias (3072,) Float32
+net.blocks.0.mlp.fc2.bias (768,) Float32
+net.blocks.0.attn.qkv.weight (2304, 768) Float32
+net.blocks.0.attn.proj.weight (768, 768) Float32
+net.blocks.0.mlp.fc1.weight (3072, 768) Float32
+net.blocks.0.mlp.fc2.weight (768, 3072) Float32
+net.blocks.1.norm1.gamma (768,) Float32
+net.blocks.1.norm1.beta (768,) Float32
+net.blocks.1.attn.q_bias (768,) Float16
+net.blocks.1.attn.v_bias (768,) Float16
+net.blocks.1.attn.qkv.bias (2304,) Float32
+net.blocks.1.attn.proj.bias (768,) Float32
+net.blocks.1.norm2.gamma (768,) Float32
+net.blocks.1.norm2.beta (768,) Float32
+net.blocks.1.mlp.fc1.bias (3072,) Float32
+net.blocks.1.mlp.fc2.bias (768,) Float32
+net.blocks.1.attn.qkv.weight (2304, 768) Float32
+net.blocks.1.attn.proj.weight (768, 768) Float32
+net.blocks.1.mlp.fc1.weight (3072, 768) Float32
+net.blocks.1.mlp.fc2.weight (768, 3072) Float32
+net.blocks.2.norm1.gamma (768,) Float32
+net.blocks.2.norm1.beta (768,) Float32
+net.blocks.2.attn.q_bias (768,) Float16
+net.blocks.2.attn.v_bias (768,) Float16
+net.blocks.2.attn.qkv.bias (2304,) Float32
+net.blocks.2.attn.proj.bias (768,) Float32
+net.blocks.2.norm2.gamma (768,) Float32
+net.blocks.2.norm2.beta (768,) Float32
+net.blocks.2.mlp.fc1.bias (3072,) Float32
+net.blocks.2.mlp.fc2.bias (768,) Float32
+net.blocks.2.attn.qkv.weight (2304, 768) Float32
+net.blocks.2.attn.proj.weight (768, 768) Float32
+net.blocks.2.mlp.fc1.weight (3072, 768) Float32
+net.blocks.2.mlp.fc2.weight (768, 3072) Float32
+net.blocks.3.norm1.gamma (768,) Float32
+net.blocks.3.norm1.beta (768,) Float32
+net.blocks.3.attn.q_bias (768,) Float16
+net.blocks.3.attn.v_bias (768,) Float16
+net.blocks.3.attn.qkv.bias (2304,) Float32
+net.blocks.3.attn.proj.bias (768,) Float32
+net.blocks.3.norm2.gamma (768,) Float32
+net.blocks.3.norm2.beta (768,) Float32
+net.blocks.3.mlp.fc1.bias (3072,) Float32
+net.blocks.3.mlp.fc2.bias (768,) Float32
+net.blocks.3.attn.qkv.weight (2304, 768) Float32
+net.blocks.3.attn.proj.weight (768, 768) Float32
+net.blocks.3.mlp.fc1.weight (3072, 768) Float32
+net.blocks.3.mlp.fc2.weight (768, 3072) Float32
+net.blocks.4.norm1.gamma (768,) Float32
+net.blocks.4.norm1.beta (768,) Float32
+net.blocks.4.attn.q_bias (768,) Float16
+net.blocks.4.attn.v_bias (768,) Float16
+net.blocks.4.attn.qkv.bias (2304,) Float32
+net.blocks.4.attn.proj.bias (768,) Float32
+net.blocks.4.norm2.gamma (768,) Float32
+net.blocks.4.norm2.beta (768,) Float32
+net.blocks.4.mlp.fc1.bias (3072,) Float32
+net.blocks.4.mlp.fc2.bias (768,) Float32
+net.blocks.4.attn.qkv.weight (2304, 768) Float32
+net.blocks.4.attn.proj.weight (768, 768) Float32
+net.blocks.4.mlp.fc1.weight (3072, 768) Float32
+net.blocks.4.mlp.fc2.weight (768, 3072) Float32
+net.blocks.5.norm1.gamma (768,) Float32
+net.blocks.5.norm1.beta (768,) Float32
+net.blocks.5.attn.q_bias (768,) Float16
+net.blocks.5.attn.v_bias (768,) Float16
+net.blocks.5.attn.qkv.bias (2304,) Float32
+net.blocks.5.attn.proj.bias (768,) Float32
+net.blocks.5.norm2.gamma (768,) Float32
+net.blocks.5.norm2.beta (768,) Float32
+net.blocks.5.mlp.fc1.bias (3072,) Float32
+net.blocks.5.mlp.fc2.bias (768,) Float32
+net.blocks.5.attn.qkv.weight (2304, 768) Float32
+net.blocks.5.attn.proj.weight (768, 768) Float32
+net.blocks.5.mlp.fc1.weight (3072, 768) Float32
+net.blocks.5.mlp.fc2.weight (768, 3072) Float32
+net.blocks.6.norm1.gamma (768,) Float32
+net.blocks.6.norm1.beta (768,) Float32
+net.blocks.6.attn.q_bias (768,) Float16
+net.blocks.6.attn.v_bias (768,) Float16
+net.blocks.6.attn.qkv.bias (2304,) Float32
+net.blocks.6.attn.proj.bias (768,) Float32
+net.blocks.6.norm2.gamma (768,) Float32
+net.blocks.6.norm2.beta (768,) Float32
+net.blocks.6.mlp.fc1.bias (3072,) Float32
+net.blocks.6.mlp.fc2.bias (768,) Float32
+net.blocks.6.attn.qkv.weight (2304, 768) Float32
+net.blocks.6.attn.proj.weight (768, 768) Float32
+net.blocks.6.mlp.fc1.weight (3072, 768) Float32
+net.blocks.6.mlp.fc2.weight (768, 3072) Float32
+net.blocks.7.norm1.gamma (768,) Float32
+net.blocks.7.norm1.beta (768,) Float32
+net.blocks.7.attn.q_bias (768,) Float16
+net.blocks.7.attn.v_bias (768,) Float16
+net.blocks.7.attn.qkv.bias (2304,) Float32
+net.blocks.7.attn.proj.bias (768,) Float32
+net.blocks.7.norm2.gamma (768,) Float32
+net.blocks.7.norm2.beta (768,) Float32
+net.blocks.7.mlp.fc1.bias (3072,) Float32
+net.blocks.7.mlp.fc2.bias (768,) Float32
+net.blocks.7.attn.qkv.weight (2304, 768) Float32
+net.blocks.7.attn.proj.weight (768, 768) Float32
+net.blocks.7.mlp.fc1.weight (3072, 768) Float32
+net.blocks.7.mlp.fc2.weight (768, 3072) Float32
+net.blocks.8.norm1.gamma (768,) Float32
+net.blocks.8.norm1.beta (768,) Float32
+net.blocks.8.attn.q_bias (768,) Float16
+net.blocks.8.attn.v_bias (768,) Float16
+net.blocks.8.attn.qkv.bias (2304,) Float32
+net.blocks.8.attn.proj.bias (768,) Float32
+net.blocks.8.norm2.gamma (768,) Float32
+net.blocks.8.norm2.beta (768,) Float32
+net.blocks.8.mlp.fc1.bias (3072,) Float32
+net.blocks.8.mlp.fc2.bias (768,) Float32
+net.blocks.8.attn.qkv.weight (2304, 768) Float32
+net.blocks.8.attn.proj.weight (768, 768) Float32
+net.blocks.8.mlp.fc1.weight (3072, 768) Float32
+net.blocks.8.mlp.fc2.weight (768, 3072) Float32
+net.blocks.9.norm1.gamma (768,) Float32
+net.blocks.9.norm1.beta (768,) Float32
+net.blocks.9.attn.q_bias (768,) Float16
+net.blocks.9.attn.v_bias (768,) Float16
+net.blocks.9.attn.qkv.bias (2304,) Float32
+net.blocks.9.attn.proj.bias (768,) Float32
+net.blocks.9.norm2.gamma (768,) Float32
+net.blocks.9.norm2.beta (768,) Float32
+net.blocks.9.mlp.fc1.bias (3072,) Float32
+net.blocks.9.mlp.fc2.bias (768,) Float32
+net.blocks.9.attn.qkv.weight (2304, 768) Float32
+net.blocks.9.attn.proj.weight (768, 768) Float32
+net.blocks.9.mlp.fc1.weight (3072, 768) Float32
+net.blocks.9.mlp.fc2.weight (768, 3072) Float32
+net.blocks.10.norm1.gamma (768,) Float32
+net.blocks.10.norm1.beta (768,) Float32
+net.blocks.10.attn.q_bias (768,) Float16
+net.blocks.10.attn.v_bias (768,) Float16
+net.blocks.10.attn.qkv.bias (2304,) Float32
+net.blocks.10.attn.proj.bias (768,) Float32
+net.blocks.10.norm2.gamma (768,) Float32
+net.blocks.10.norm2.beta (768,) Float32
+net.blocks.10.mlp.fc1.bias (3072,) Float32
+net.blocks.10.mlp.fc2.bias (768,) Float32
+net.blocks.10.attn.qkv.weight (2304, 768) Float32
+net.blocks.10.attn.proj.weight (768, 768) Float32
+net.blocks.10.mlp.fc1.weight (3072, 768) Float32
+net.blocks.10.mlp.fc2.weight (768, 3072) Float32
+net.blocks.11.norm1.gamma (768,) Float32
+net.blocks.11.norm1.beta (768,) Float32
+net.blocks.11.attn.q_bias (768,) Float16
+net.blocks.11.attn.v_bias (768,) Float16
+net.blocks.11.attn.qkv.bias (2304,) Float32
+net.blocks.11.attn.proj.bias (768,) Float32
+net.blocks.11.norm2.gamma (768,) Float32
+net.blocks.11.norm2.beta (768,) Float32
+net.blocks.11.mlp.fc1.bias (3072,) Float32
+net.blocks.11.mlp.fc2.bias (768,) Float32
+net.blocks.11.attn.qkv.weight (2304, 768) Float32
+net.blocks.11.attn.proj.weight (768, 768) Float32
+net.blocks.11.mlp.fc1.weight (3072, 768) Float32
+net.blocks.11.mlp.fc2.weight (768, 3072) Float32
+net.fc_norm.gamma (768,) Float32
+net.fc_norm.beta (768,) Float32
+net.head.bias (401,) Float32
+net.head.weight (401, 768) Float32
+scale_sense () Float32
+net.blocks.0.attn.k_bias (768,) Float16
+net.blocks.1.attn.k_bias (768,) Float16
+net.blocks.2.attn.k_bias (768,) Float16
+net.blocks.3.attn.k_bias (768,) Float16
+net.blocks.4.attn.k_bias (768,) Float16
+net.blocks.5.attn.k_bias (768,) Float16
+net.blocks.6.attn.k_bias (768,) Float16
+net.blocks.7.attn.k_bias (768,) Float16
+net.blocks.8.attn.k_bias (768,) Float16
+net.blocks.9.attn.k_bias (768,) Float16
+net.blocks.10.attn.k_bias (768,) Float16
+net.blocks.11.attn.k_bias (768,) Float16
+global_step (1,) Int32
+adam_m.patch_embed.proj.weight (768, 3, 2, 16, 16) Float32
+adam_m.patch_embed.proj.bias (768,) Float32
+adam_m.blocks.0.norm1.gamma (768,) Float32
+adam_m.blocks.0.norm1.beta (768,) Float32
+adam_m.blocks.0.attn.q_bias (768,) Float16
+adam_m.blocks.0.attn.v_bias (768,) Float16
+adam_m.blocks.0.attn.qkv.bias (2304,) Float32
+adam_m.blocks.0.attn.proj.bias (768,) Float32
+adam_m.blocks.0.norm2.gamma (768,) Float32
+adam_m.blocks.0.norm2.beta (768,) Float32
+adam_m.blocks.0.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.0.mlp.fc2.bias (768,) Float32
+adam_m.blocks.0.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.0.attn.proj.weight (768, 768) Float32
+adam_m.blocks.0.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.0.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.1.norm1.gamma (768,) Float32
+adam_m.blocks.1.norm1.beta (768,) Float32
+adam_m.blocks.1.attn.q_bias (768,) Float16
+adam_m.blocks.1.attn.v_bias (768,) Float16
+adam_m.blocks.1.attn.qkv.bias (2304,) Float32
+adam_m.blocks.1.attn.proj.bias (768,) Float32
+adam_m.blocks.1.norm2.gamma (768,) Float32
+adam_m.blocks.1.norm2.beta (768,) Float32
+adam_m.blocks.1.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.1.mlp.fc2.bias (768,) Float32
+adam_m.blocks.1.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.1.attn.proj.weight (768, 768) Float32
+adam_m.blocks.1.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.1.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.2.norm1.gamma (768,) Float32
+adam_m.blocks.2.norm1.beta (768,) Float32
+adam_m.blocks.2.attn.q_bias (768,) Float16
+adam_m.blocks.2.attn.v_bias (768,) Float16
+adam_m.blocks.2.attn.qkv.bias (2304,) Float32
+adam_m.blocks.2.attn.proj.bias (768,) Float32
+adam_m.blocks.2.norm2.gamma (768,) Float32
+adam_m.blocks.2.norm2.beta (768,) Float32
+adam_m.blocks.2.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.2.mlp.fc2.bias (768,) Float32
+adam_m.blocks.2.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.2.attn.proj.weight (768, 768) Float32
+adam_m.blocks.2.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.2.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.3.norm1.gamma (768,) Float32
+adam_m.blocks.3.norm1.beta (768,) Float32
+adam_m.blocks.3.attn.q_bias (768,) Float16
+adam_m.blocks.3.attn.v_bias (768,) Float16
+adam_m.blocks.3.attn.qkv.bias (2304,) Float32
+adam_m.blocks.3.attn.proj.bias (768,) Float32
+adam_m.blocks.3.norm2.gamma (768,) Float32
+adam_m.blocks.3.norm2.beta (768,) Float32
+adam_m.blocks.3.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.3.mlp.fc2.bias (768,) Float32
+adam_m.blocks.3.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.3.attn.proj.weight (768, 768) Float32
+adam_m.blocks.3.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.3.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.4.norm1.gamma (768,) Float32
+adam_m.blocks.4.norm1.beta (768,) Float32
+adam_m.blocks.4.attn.q_bias (768,) Float16
+adam_m.blocks.4.attn.v_bias (768,) Float16
+adam_m.blocks.4.attn.qkv.bias (2304,) Float32
+adam_m.blocks.4.attn.proj.bias (768,) Float32
+adam_m.blocks.4.norm2.gamma (768,) Float32
+adam_m.blocks.4.norm2.beta (768,) Float32
+adam_m.blocks.4.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.4.mlp.fc2.bias (768,) Float32
+adam_m.blocks.4.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.4.attn.proj.weight (768, 768) Float32
+adam_m.blocks.4.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.4.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.5.norm1.gamma (768,) Float32
+adam_m.blocks.5.norm1.beta (768,) Float32
+adam_m.blocks.5.attn.q_bias (768,) Float16
+adam_m.blocks.5.attn.v_bias (768,) Float16
+adam_m.blocks.5.attn.qkv.bias (2304,) Float32
+adam_m.blocks.5.attn.proj.bias (768,) Float32
+adam_m.blocks.5.norm2.gamma (768,) Float32
+adam_m.blocks.5.norm2.beta (768,) Float32
+adam_m.blocks.5.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.5.mlp.fc2.bias (768,) Float32
+adam_m.blocks.5.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.5.attn.proj.weight (768, 768) Float32
+adam_m.blocks.5.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.5.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.6.norm1.gamma (768,) Float32
+adam_m.blocks.6.norm1.beta (768,) Float32
+adam_m.blocks.6.attn.q_bias (768,) Float16
+adam_m.blocks.6.attn.v_bias (768,) Float16
+adam_m.blocks.6.attn.qkv.bias (2304,) Float32
+adam_m.blocks.6.attn.proj.bias (768,) Float32
+adam_m.blocks.6.norm2.gamma (768,) Float32
+adam_m.blocks.6.norm2.beta (768,) Float32
+adam_m.blocks.6.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.6.mlp.fc2.bias (768,) Float32
+adam_m.blocks.6.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.6.attn.proj.weight (768, 768) Float32
+adam_m.blocks.6.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.6.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.7.norm1.gamma (768,) Float32
+adam_m.blocks.7.norm1.beta (768,) Float32
+adam_m.blocks.7.attn.q_bias (768,) Float16
+adam_m.blocks.7.attn.v_bias (768,) Float16
+adam_m.blocks.7.attn.qkv.bias (2304,) Float32
+adam_m.blocks.7.attn.proj.bias (768,) Float32
+adam_m.blocks.7.norm2.gamma (768,) Float32
+adam_m.blocks.7.norm2.beta (768,) Float32
+adam_m.blocks.7.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.7.mlp.fc2.bias (768,) Float32
+adam_m.blocks.7.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.7.attn.proj.weight (768, 768) Float32
+adam_m.blocks.7.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.7.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.8.norm1.gamma (768,) Float32
+adam_m.blocks.8.norm1.beta (768,) Float32
+adam_m.blocks.8.attn.q_bias (768,) Float16
+adam_m.blocks.8.attn.v_bias (768,) Float16
+adam_m.blocks.8.attn.qkv.bias (2304,) Float32
+adam_m.blocks.8.attn.proj.bias (768,) Float32
+adam_m.blocks.8.norm2.gamma (768,) Float32
+adam_m.blocks.8.norm2.beta (768,) Float32
+adam_m.blocks.8.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.8.mlp.fc2.bias (768,) Float32
+adam_m.blocks.8.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.8.attn.proj.weight (768, 768) Float32
+adam_m.blocks.8.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.8.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.9.norm1.gamma (768,) Float32
+adam_m.blocks.9.norm1.beta (768,) Float32
+adam_m.blocks.9.attn.q_bias (768,) Float16
+adam_m.blocks.9.attn.v_bias (768,) Float16
+adam_m.blocks.9.attn.qkv.bias (2304,) Float32
+adam_m.blocks.9.attn.proj.bias (768,) Float32
+adam_m.blocks.9.norm2.gamma (768,) Float32
+adam_m.blocks.9.norm2.beta (768,) Float32
+adam_m.blocks.9.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.9.mlp.fc2.bias (768,) Float32
+adam_m.blocks.9.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.9.attn.proj.weight (768, 768) Float32
+adam_m.blocks.9.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.9.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.10.norm1.gamma (768,) Float32
+adam_m.blocks.10.norm1.beta (768,) Float32
+adam_m.blocks.10.attn.q_bias (768,) Float16
+adam_m.blocks.10.attn.v_bias (768,) Float16
+adam_m.blocks.10.attn.qkv.bias (2304,) Float32
+adam_m.blocks.10.attn.proj.bias (768,) Float32
+adam_m.blocks.10.norm2.gamma (768,) Float32
+adam_m.blocks.10.norm2.beta (768,) Float32
+adam_m.blocks.10.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.10.mlp.fc2.bias (768,) Float32
+adam_m.blocks.10.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.10.attn.proj.weight (768, 768) Float32
+adam_m.blocks.10.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.10.mlp.fc2.weight (768, 3072) Float32
+adam_m.blocks.11.norm1.gamma (768,) Float32
+adam_m.blocks.11.norm1.beta (768,) Float32
+adam_m.blocks.11.attn.q_bias (768,) Float16
+adam_m.blocks.11.attn.v_bias (768,) Float16
+adam_m.blocks.11.attn.qkv.bias (2304,) Float32
+adam_m.blocks.11.attn.proj.bias (768,) Float32
+adam_m.blocks.11.norm2.gamma (768,) Float32
+adam_m.blocks.11.norm2.beta (768,) Float32
+adam_m.blocks.11.mlp.fc1.bias (3072,) Float32
+adam_m.blocks.11.mlp.fc2.bias (768,) Float32
+adam_m.blocks.11.attn.qkv.weight (2304, 768) Float32
+adam_m.blocks.11.attn.proj.weight (768, 768) Float32
+adam_m.blocks.11.mlp.fc1.weight (3072, 768) Float32
+adam_m.blocks.11.mlp.fc2.weight (768, 3072) Float32
+adam_m.fc_norm.gamma (768,) Float32
+adam_m.fc_norm.beta (768,) Float32
+adam_m.head.bias (401,) Float32
+adam_m.head.weight (401, 768) Float32
+adam_v.patch_embed.proj.weight (768, 3, 2, 16, 16) Float32
+adam_v.patch_embed.proj.bias (768,) Float32
+adam_v.blocks.0.norm1.gamma (768,) Float32
+adam_v.blocks.0.norm1.beta (768,) Float32
+adam_v.blocks.0.attn.q_bias (768,) Float16
+adam_v.blocks.0.attn.v_bias (768,) Float16
+adam_v.blocks.0.attn.qkv.bias (2304,) Float32
+adam_v.blocks.0.attn.proj.bias (768,) Float32
+adam_v.blocks.0.norm2.gamma (768,) Float32
+adam_v.blocks.0.norm2.beta (768,) Float32
+adam_v.blocks.0.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.0.mlp.fc2.bias (768,) Float32
+adam_v.blocks.0.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.0.attn.proj.weight (768, 768) Float32
+adam_v.blocks.0.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.0.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.1.norm1.gamma (768,) Float32
+adam_v.blocks.1.norm1.beta (768,) Float32
+adam_v.blocks.1.attn.q_bias (768,) Float16
+adam_v.blocks.1.attn.v_bias (768,) Float16
+adam_v.blocks.1.attn.qkv.bias (2304,) Float32
+adam_v.blocks.1.attn.proj.bias (768,) Float32
+adam_v.blocks.1.norm2.gamma (768,) Float32
+adam_v.blocks.1.norm2.beta (768,) Float32
+adam_v.blocks.1.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.1.mlp.fc2.bias (768,) Float32
+adam_v.blocks.1.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.1.attn.proj.weight (768, 768) Float32
+adam_v.blocks.1.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.1.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.2.norm1.gamma (768,) Float32
+adam_v.blocks.2.norm1.beta (768,) Float32
+adam_v.blocks.2.attn.q_bias (768,) Float16
+adam_v.blocks.2.attn.v_bias (768,) Float16
+adam_v.blocks.2.attn.qkv.bias (2304,) Float32
+adam_v.blocks.2.attn.proj.bias (768,) Float32
+adam_v.blocks.2.norm2.gamma (768,) Float32
+adam_v.blocks.2.norm2.beta (768,) Float32
+adam_v.blocks.2.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.2.mlp.fc2.bias (768,) Float32
+adam_v.blocks.2.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.2.attn.proj.weight (768, 768) Float32
+adam_v.blocks.2.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.2.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.3.norm1.gamma (768,) Float32
+adam_v.blocks.3.norm1.beta (768,) Float32
+adam_v.blocks.3.attn.q_bias (768,) Float16
+adam_v.blocks.3.attn.v_bias (768,) Float16
+adam_v.blocks.3.attn.qkv.bias (2304,) Float32
+adam_v.blocks.3.attn.proj.bias (768,) Float32
+adam_v.blocks.3.norm2.gamma (768,) Float32
+adam_v.blocks.3.norm2.beta (768,) Float32
+adam_v.blocks.3.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.3.mlp.fc2.bias (768,) Float32
+adam_v.blocks.3.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.3.attn.proj.weight (768, 768) Float32
+adam_v.blocks.3.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.3.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.4.norm1.gamma (768,) Float32
+adam_v.blocks.4.norm1.beta (768,) Float32
+adam_v.blocks.4.attn.q_bias (768,) Float16
+adam_v.blocks.4.attn.v_bias (768,) Float16
+adam_v.blocks.4.attn.qkv.bias (2304,) Float32
+adam_v.blocks.4.attn.proj.bias (768,) Float32
+adam_v.blocks.4.norm2.gamma (768,) Float32
+adam_v.blocks.4.norm2.beta (768,) Float32
+adam_v.blocks.4.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.4.mlp.fc2.bias (768,) Float32
+adam_v.blocks.4.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.4.attn.proj.weight (768, 768) Float32
+adam_v.blocks.4.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.4.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.5.norm1.gamma (768,) Float32
+adam_v.blocks.5.norm1.beta (768,) Float32
+adam_v.blocks.5.attn.q_bias (768,) Float16
+adam_v.blocks.5.attn.v_bias (768,) Float16
+adam_v.blocks.5.attn.qkv.bias (2304,) Float32
+adam_v.blocks.5.attn.proj.bias (768,) Float32
+adam_v.blocks.5.norm2.gamma (768,) Float32
+adam_v.blocks.5.norm2.beta (768,) Float32
+adam_v.blocks.5.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.5.mlp.fc2.bias (768,) Float32
+adam_v.blocks.5.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.5.attn.proj.weight (768, 768) Float32
+adam_v.blocks.5.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.5.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.6.norm1.gamma (768,) Float32
+adam_v.blocks.6.norm1.beta (768,) Float32
+adam_v.blocks.6.attn.q_bias (768,) Float16
+adam_v.blocks.6.attn.v_bias (768,) Float16
+adam_v.blocks.6.attn.qkv.bias (2304,) Float32
+adam_v.blocks.6.attn.proj.bias (768,) Float32
+adam_v.blocks.6.norm2.gamma (768,) Float32
+adam_v.blocks.6.norm2.beta (768,) Float32
+adam_v.blocks.6.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.6.mlp.fc2.bias (768,) Float32
+adam_v.blocks.6.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.6.attn.proj.weight (768, 768) Float32
+adam_v.blocks.6.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.6.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.7.norm1.gamma (768,) Float32
+adam_v.blocks.7.norm1.beta (768,) Float32
+adam_v.blocks.7.attn.q_bias (768,) Float16
+adam_v.blocks.7.attn.v_bias (768,) Float16
+adam_v.blocks.7.attn.qkv.bias (2304,) Float32
+adam_v.blocks.7.attn.proj.bias (768,) Float32
+adam_v.blocks.7.norm2.gamma (768,) Float32
+adam_v.blocks.7.norm2.beta (768,) Float32
+adam_v.blocks.7.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.7.mlp.fc2.bias (768,) Float32
+adam_v.blocks.7.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.7.attn.proj.weight (768, 768) Float32
+adam_v.blocks.7.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.7.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.8.norm1.gamma (768,) Float32
+adam_v.blocks.8.norm1.beta (768,) Float32
+adam_v.blocks.8.attn.q_bias (768,) Float16
+adam_v.blocks.8.attn.v_bias (768,) Float16
+adam_v.blocks.8.attn.qkv.bias (2304,) Float32
+adam_v.blocks.8.attn.proj.bias (768,) Float32
+adam_v.blocks.8.norm2.gamma (768,) Float32
+adam_v.blocks.8.norm2.beta (768,) Float32
+adam_v.blocks.8.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.8.mlp.fc2.bias (768,) Float32
+adam_v.blocks.8.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.8.attn.proj.weight (768, 768) Float32
+adam_v.blocks.8.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.8.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.9.norm1.gamma (768,) Float32
+adam_v.blocks.9.norm1.beta (768,) Float32
+adam_v.blocks.9.attn.q_bias (768,) Float16
+adam_v.blocks.9.attn.v_bias (768,) Float16
+adam_v.blocks.9.attn.qkv.bias (2304,) Float32
+adam_v.blocks.9.attn.proj.bias (768,) Float32
+adam_v.blocks.9.norm2.gamma (768,) Float32
+adam_v.blocks.9.norm2.beta (768,) Float32
+adam_v.blocks.9.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.9.mlp.fc2.bias (768,) Float32
+adam_v.blocks.9.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.9.attn.proj.weight (768, 768) Float32
+adam_v.blocks.9.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.9.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.10.norm1.gamma (768,) Float32
+adam_v.blocks.10.norm1.beta (768,) Float32
+adam_v.blocks.10.attn.q_bias (768,) Float16
+adam_v.blocks.10.attn.v_bias (768,) Float16
+adam_v.blocks.10.attn.qkv.bias (2304,) Float32
+adam_v.blocks.10.attn.proj.bias (768,) Float32
+adam_v.blocks.10.norm2.gamma (768,) Float32
+adam_v.blocks.10.norm2.beta (768,) Float32
+adam_v.blocks.10.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.10.mlp.fc2.bias (768,) Float32
+adam_v.blocks.10.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.10.attn.proj.weight (768, 768) Float32
+adam_v.blocks.10.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.10.mlp.fc2.weight (768, 3072) Float32
+adam_v.blocks.11.norm1.gamma (768,) Float32
+adam_v.blocks.11.norm1.beta (768,) Float32
+adam_v.blocks.11.attn.q_bias (768,) Float16
+adam_v.blocks.11.attn.v_bias (768,) Float16
+adam_v.blocks.11.attn.qkv.bias (2304,) Float32
+adam_v.blocks.11.attn.proj.bias (768,) Float32
+adam_v.blocks.11.norm2.gamma (768,) Float32
+adam_v.blocks.11.norm2.beta (768,) Float32
+adam_v.blocks.11.mlp.fc1.bias (3072,) Float32
+adam_v.blocks.11.mlp.fc2.bias (768,) Float32
+adam_v.blocks.11.attn.qkv.weight (2304, 768) Float32
+adam_v.blocks.11.attn.proj.weight (768, 768) Float32
+adam_v.blocks.11.mlp.fc1.weight (3072, 768) Float32
+adam_v.blocks.11.mlp.fc2.weight (768, 3072) Float32
+adam_v.fc_norm.gamma (768,) Float32
+adam_v.fc_norm.beta (768,) Float32
+adam_v.head.bias (401,) Float32
+adam_v.head.weight (401, 768) Float32
+current_iterator_step () Int32
+last_overflow_iterator_step () Int32
