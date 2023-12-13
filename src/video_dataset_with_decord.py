@@ -1,15 +1,19 @@
 import multiprocessing
 import os
+import psutil
+
 import cv2
-from decord import VideoReader
+from decord import VideoReader, cpu, gpu
 import numpy as np
 import random
+
 import time
 
 from mindspore import dataset
 from mindspore.dataset import (DistributedSampler, SequentialSampler,
                                transforms, vision)
 from mindspore.dataset.vision import Inter
+
 from transforms.mixup import Mixup
 from utils_mae import video_utils
 
@@ -141,6 +145,24 @@ class VideoDataset:
         :param index: 视频文件列表的下标索引
         :return:  cv2 cap，文件路径
         """
+        # for retry in range(self._num_retries):  # 视频打开失败则重新随机抓取视频
+        #     # 获取视频路径
+        #     sample = self._path_to_videos[index]
+        #     if not os.path.exists(sample):
+        #         self.logger.warning("文件{}不存在".format(sample))
+        #         index = np.random.randint(0, len(self._path_to_videos) - 1)
+        #         continue
+        #     # 打开视频文件
+        #     # cap = cv2.VideoCapture(sample)
+        #     try:
+        #         vr = VideoReader(sample)
+        #     except RuntimeError:
+        #         self.logger.warning("视频打开失败,video id: {}, retries: {}, path: {}"
+        #                             .format(index, retry, sample))
+        #         index = np.random.randint(0, len(self._path_to_videos) - 1)
+
+        #     return vr, sample, index  # 返回打开的视频对象和样本路径
+        # raise RuntimeError("数据多次读取失败！")  # 如果无法成功打开和读取视频，则触发运行时错误
         for retry in range(self._num_retries):  # 视频打开失败则重新随机抓取视频
             # 获取视频路径
             sample = self._path_to_videos[index]
@@ -152,89 +174,17 @@ class VideoDataset:
             # 打开视频文件
             # cap = cv2.VideoCapture(sample)
             try:
-                vr = VideoReader(sample)
+                vr = VideoReader(sample, ctx=cpu(0), num_threads=192)
                 if len(vr) > 100:
                     return vr, sample, index
                 else:
-                    warning = "视频过短,video id: {}, retries: {}, path: {} length:{}".format(index, retry, sample, len(vr))
+                    warning = "视频过短,video id: {}, retries: {}, path: {} length:{} cpu {} ".format(index, retry, sample, len(vr), cpu_core_id)
                     self.logger.warning(warning)
             except RuntimeError:
                 warning = "视频打开失败,video id: {}, retries: {}, path: {}".format(index, retry, sample)
                 self.logger.warning(warning.format(index, retry, sample, len(vr)))
             index = np.random.randint(0, len(self._path_to_videos) - 1)
         raise RuntimeError("数据多次读取失败！")  # 如果无法成功打开和读取视频，则触发运行时错误
-
-    # def _get_snippiets(self, vr: VideoReader, index):
-    #     """
-    #     用于在一段视频中采样一小段
-    #     这个函数返回类别标签，所以应该被用在finetune阶段
-    #     :param cap:  cv视频流
-    #     :param index:  视频文件列表的下标索引
-    #     :return:
-    #         frame_list:[r,t,h,w,c]   一段视频切片，r为从一个视频中的重复采样次数
-    #         label list: int          表示标签类别的int数
-    #         success_sampled: True    执行成功标记
-    #     """
-    #     success_sampled = False
-    #     total_frames = len(vr)  # 视频总帧数
-    #
-    #     if self.mode in ["pretrain", "finetune"]:
-    #         temporal_sample_index = -1  # -1 indicates random sampling.
-    #     elif self.mode == "val":
-    #         temporal_sample_index = 0
-    #     elif self.mode == "test":
-    #         temporal_sample_index = self._spatial_temporal_idx[index] // self._test_num_spatial_crops
-    #     else:
-    #         raise NotImplementedError("Does not support {} mode".format(self.mode))
-    #
-    #     frame_list = []
-    #     label_list = []
-    #     label = self._labels[index]
-    #     for i in range(self._repeat_aug):
-    #         # try selective decoding.
-    #         video_start_frame, video_end_frame = video_utils.get_start_end_idx(
-    #             total_frames,
-    #             self._clip_size,
-    #             temporal_sample_index,
-    #             self._test_num_ensemble_views,
-    #             use_offset=self._use_offset_sampling,
-    #         )
-    #
-    #         # cap.set(cv2.CAP_PROP_POS_FRAMES, video_start_frame)
-    #         # vr.seek_accurate(video_end_frame)
-    #
-    #         vr.seek(video_end_frame)
-    #         frames = []
-    #         # 读取指定数量的帧
-    #         for j in range(self._clip_size):
-    #             # ret, frame = cap.read()
-    #             # if not ret:
-    #             #     break
-    #             frame = vr.next()
-    #             frame = frame.asnumpy()
-    #             frames.append(frame)
-    #
-    #         frames = np.array(frames)
-    #         try:
-    #             frames = video_utils.temporal_sampling(frames, 0, self._clip_size - 1, self._num_frames)
-    #             frame_list.append(frames)
-    #             label_list.append(label)
-    #             if len(frame_list) == self._repeat_aug:
-    #                 success_sampled = True
-    #         except:  # read error
-    #             sample = self._path_to_videos[index]
-    #             self.logger.warning(f"temporal sampling failed,file:{sample}")
-    #             del vr
-    #             index = np.random.randint(0, len(self._path_to_videos) - 1)
-    #             sample = self._path_to_videos[index]
-    #             vr = VideoReader(sample)
-    #
-    #     frame_list = np.array(frame_list)
-    #     label_list = np.array(label_list, dtype=np.int32)
-    #
-    #     del vr
-    #
-    #     return frame_list, label_list, success_sampled
 
     def _get_snippiets(self, vr: VideoReader, index):
         """
@@ -247,7 +197,6 @@ class VideoDataset:
             label list: int          表示标签类别的int数
             success_sampled: True    执行成功标记
         """
-        start=time.time()
         success_sampled = False
         total_frames = len(vr)  # 视频总帧数
 
@@ -280,6 +229,7 @@ class VideoDataset:
             label_list.append(label)
             if len(frame_list) == self._repeat_aug:
                 success_sampled = True
+
         del vr
 
         frame_list = np.array(frame_list)
@@ -289,6 +239,7 @@ class VideoDataset:
         self.logger_cv.info(f"get_snippet {self._path_to_videos[index]}  TIME {end - start}")
 
         return frame_list, label_list, success_sampled
+
 
     def _get_snippietsAndframeDif(self, vr, index):
         """
@@ -328,13 +279,16 @@ class VideoDataset:
                 use_offset=self._use_offset_sampling,
             )
 
+            print(f"clip size {self._clip_size}")
             video_start_frame = int(start_idx)
+            FRAME_LIST = [video_start_frame + max(0, x * self._sampling_rate - 1) for x in range(self._clip_size)]
+            frames = vr.get_batch(FRAME_LIST).asnumpy()
+
             # cap.set(cv2.CAP_PROP_POS_FRAMES, video_start_frame)
-            vr.seek_accurate(video_start_frame)
 
             frames, frames_gray = [], []
             # 读取指定数量的帧
-            for j in range(self._clip_size):
+            for frame in range(FRAME_LIST):
                 # ret, frame = cap.read()
                 # if not ret:
                 #     break
@@ -342,8 +296,7 @@ class VideoDataset:
                 # frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 # frames.append(frame_rgb)
                 # frames_gray.append(frame_gray)
-                frame = vr.next()
-                frame_rgb = frame.asnumpy()
+                frame_rgb = frame
                 # TODO: remove cv2
                 frame_gray = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2GRAY)
                 frames.append(frame_rgb)
@@ -369,56 +322,6 @@ class VideoDataset:
                 success_sampled = False
 
         return frames_list, frames_gray_list, start_idx, end_idx, success_sampled
-
-    # def _get_snippietsAndframeDif(self, vr, index):
-    #     """
-    #     用于在一段视频中采样一小段
-    #     *似乎这段代码设计的时候只考虑r=1的情况，启用时要禁用视频重采样
-    #     input:
-    #         :param index:  视频文件列表的下标索引
-    #         :param start_idx: 开始帧的id
-    #         :param end_idx: 结束帧的id，start_idx与end_idx在之前调用_get_snippiets时得到
-    #         :param frames_gray_list: 上一个环节得到的视频帧的灰度图列表
-    #     :return:
-    #         frames_list frame_list:[r,t,h,w,c]   一段视频切片，r为从一个视频中的重复采样次数
-    #         frames_depth_gray_list: [t,h,w]   深度图列表
-    #         start_idx, end_idx: 后续提取深度可能用到的位置标记
-    #         success_sampled: True    执行成功标记
-    #     """
-    #     success_sampled = False
-    #     total_frames = len(vr)  # 视频总帧数
-    #
-    #     if self.mode in ["pretrain", "finetune"]:
-    #         temporal_sample_index = -1  # -1 indicates random sampling.
-    #     elif self.mode == "val":
-    #         temporal_sample_index = 0
-    #     else:
-    #         raise NotImplementedError("Does not support {} mode".format(self.mode))
-    #
-    #     frames_list = []
-    #     frames_gray_list = []
-    #     start_idx, end_idx = 0, 0
-    #     for i in range(self._repeat_aug):
-    #         # try selective decoding.
-    #         start_idx, end_idx = video_utils.get_start_end_idx(
-    #             total_frames,
-    #             self._clip_size,
-    #             temporal_sample_index,
-    #             0,
-    #             use_offset=self._use_offset_sampling,
-    #         )
-    #
-    #         video_start_frame = int(start_idx)
-    #         vr.seek(video_start_frame)
-    #         FRAME_LIST = [video_start_frame + max(0, x * self._sampling_rate - 1) for x in range(16)]
-    #         frames = vr.get_batch(FRAME_LIST).asnumpy()
-    #
-    #         frames_list.append(frames)
-    #         if len(frames_list) == self._repeat_aug:
-    #             success_sampled = True
-    #     del vr
-    #
-    #     return frames_list, frames_gray_list, start_idx, end_idx, success_sampled
 
     def _get_snippiets_depth(self, index, start_idx, end_idx, frames_gray_list):
         """
@@ -571,6 +474,7 @@ class MaskMapGenerator:
         diff_list_done = np.array(diff_list_done)  # shape:(16, 224, 224)
         assert diff_list_done.shape == (t, 224, 224)
 
+
         # patch:16*16 帧差下采样 (16, 224, 224)--->(16, 14, 14)
         patch_prob = []
         threshold = int(10)
@@ -714,7 +618,7 @@ class MaskMapGenerator:
                 mask_prob_frame = np.zeros_like(mask_prob_depth)
             if mask_prob_depth is None:
                 mask_prob_depth = np.zeros_like(mask_prob_frame)
-            prob_mul = 0.7 * mask_prob_frame + 0.3 * mask_prob_depth
+            prob_mul = 0.7*mask_prob_frame + 0.3*mask_prob_depth
         else:
             raise ValueError
 
@@ -1072,11 +976,6 @@ def create_dataset(args, mode="pretrain", shuffle=True):
         )
         column_names = ["video", "mask", "ids_restore", "ids_keep", "ids_mask"]
 
-        # data_transform = transforms.Compose([
-        #     video_utils.TransposeReshape(args.repeat_aug),
-        #     vision.RandomResizedCrop(size=args.input_size, scale=args.jitter_scales_relative,
-        #                              ratio=args.jitter_aspect_relative),
-        #     vision.HWC2CHW(), ])  # test w/o transforms
         data_transform = transforms.Compose([  # r, t, h, w, c
             vision.Rescale(rescale=1.0 / 255.0, shift=0),
             vision.Normalize(mean=args.mean, std=args.std),
@@ -1162,24 +1061,18 @@ def create_dataset(args, mode="pretrain", shuffle=True):
         python_multiprocessing=False,
         sampler=sampler
     )
-
+    
     def data_transform_cluser(a):
-        # args.logger_cv.info(f"data shape:{a.shape}")
         start_time = time.time()
         b = data_transform(a)
         end_time = time.time()
-        # args.logger_cv.info(f"data_transformed shape:{a.shape}")
         args.logger_cv.info(f"data transform compute time {end_time - start_time}")
         return b
 
-    if mode in ["finetune", "pretrain", "pretrain_val"]:
-        # pass
+    if mode in ["finetune", "pretrain","pretrain_val"]:
         data = data.map(data_transform_cluser,
                         input_columns="video",
                         num_parallel_workers=num_parallel_workers)
-        # data = data.map(data_transform,
-        #                 input_columns="video",
-        #                 num_parallel_workers=num_parallel_workers)
     elif mode == "val":
         data = data.map(data_transform,
                         input_columns=["video", "label", "sample", "index"],
@@ -1205,3 +1098,4 @@ def create_dataset(args, mode="pretrain", shuffle=True):
             args.logger.info("MixUp Closed!")
     print("----> down")
     return data
+
