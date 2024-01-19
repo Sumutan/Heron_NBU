@@ -13,6 +13,7 @@ frames_folder/
 """
 
 import os
+import time
 from tqdm import tqdm
 import argparse
 from PIL import Image
@@ -341,10 +342,9 @@ class Task_collector:
     def get_video_list_with_framenum_continue(input_dir, output_dir):  # 搜集未处理的任务
         video_list = []  # 包含所有视频文件的列表
         cost_list = []
-        # passlist=[] #['Normal_Videos307_x264','Normal_Videos308_x264','Normal_Videos549_x264']
+        # passlist = []  # extract_all_video
         # passlist=['Normal_Videos307_x264','Normal_Videos308_x264','Normal_Videos549_x264','Normal_Videos633_x264'] #ucf
         passlist=['Normal_Videos307_x264','Normal_Videos308_x264','Normal_Videos633_x264','.ipynb_checkpoints'] #ucf
-
 
         for video in os.listdir(input_dir):
             if video in passlist:
@@ -381,7 +381,6 @@ def run(args_item):
     crop_num = run_config_dic['crop_num']
     dataset = run_config_dic['dataset']
     mask_ratio = run_config_dic['mask_ratio']
-    use_depth = run_config_dic['use_depth']
 
     video_dir_depth = video_dir.replace("/frames", "/DepthFrames").replace(".mp4", "")  # frames 与 depthframes位于同一目录下
     dataloader = DataLoader()
@@ -439,11 +438,12 @@ def run(args_item):
     full_features = [[] for i in range(crop_num)]
 
     for batch_id in tqdm(range(batch_num)):
+        # start = time.time()
         batch_data = DataLoader.load_rgb_batch(video_dir, rgb_files, frame_indices[batch_id])
         try:
             batch_data_depth = DataLoader.load_rgb_batch(video_dir_depth, rgb_files_depth, frame_indices[batch_id])
         except:
-            print('error folder:',video_dir_depth)
+            print('error folder:', video_dir_depth)
 
         batch_data_n_crop = []
         batch_data_n_crop_depth = []
@@ -453,7 +453,6 @@ def run(args_item):
         elif crop_num == 10:
             batch_data_n_crop = DataLoader.oversample_data(batch_data)  # batch_data_n_crop ：[crop,b,r,h,w,c]
             batch_data_n_crop_depth = DataLoader.oversample_data(batch_data_depth)
-
         batch_data_n_crop_unnormalized = []  # 存放未归一化的原图
         batch_data_n_crop_unnormalized_depth = []  # 存放未归一化的原图
         for normalized_data in batch_data_n_crop:
@@ -461,7 +460,10 @@ def run(args_item):
         for normalized_data_depth in batch_data_n_crop_depth:
             batch_data_n_crop_unnormalized_depth.append(
                 ((normalized_data_depth + 1) * (255 / 2)).astype(np.float32))  # 逆归一化操作
+        # end = time.time()
+        # tqdm.write(f'DataPrepare_timecost:{end - start}s')
 
+        # start = time.time()
         for i in range(crop_num):  # b,t,h,w,c
             assert (batch_data_n_crop[i].shape[-2] == 224) and (batch_data_n_crop[i].shape[-3] == 224)
             assert (batch_data_n_crop_depth[i].shape[-2] == 224) and (batch_data_n_crop_depth[i].shape[-3] == 224)
@@ -500,10 +502,13 @@ def run(args_item):
             # for i,mov in enumerate(batch_data_n_crop_unnormalized_depth):
             #     numpy_array_to_video(mov[0],f"{video_name}_depth_crop{i}.mp4")
 
+            # infer_start = time.time()
             full_features[i].append(forward_batch(batch_data_n_crop[i], model, ids_keep, frames_gray_depth))
+            # infer_end = time.time()
+            # if i == 0: tqdm.write(f'Infer1Crop_timecost:{infer_end - infer_start}s')
 
-            # full_features[i].append(forward_batch(batch_data_n_crop[i], model, ids_keep))
-            # full_features[i].append(forward_batch(batch_data_n_crop[i], model))
+        # end = time.time()
+        # tqdm.write(f'Inference_timecost:{end - start}s')
 
     full_features = [np.concatenate(i, axis=0) for i in full_features]  # 合并batch
     full_features = [np.expand_dims(i, axis=0) for i in full_features]
@@ -516,11 +521,11 @@ def run(args_item):
 def get_run_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', default="rgb", type=str)
-    parser.add_argument('--use_ckpt', default="/home/ma-user/work/ckpt/extracted/9-1_pretrain_frame_with_depth_add_loss_on_surveillance_20w_change_encoder.ckpt",
+    parser.add_argument('--use_ckpt', default="/home/ma-user/work/ckpt/9-5_9-1_finetune.ckpt",
                         type=str)  # 9-5_9-1_finetune.ckpt/11-1_10-15_finetune_L.ckpt
-            # 9-1_pretrain_frame_with_depth_add_loss_on_surveillance_20w_change_encoder.ckpt  (waiting)  (记得改输出路径)
+    # 9-1_pretrain_frame_with_depth_add_loss_on_surveillance_20w_change_encoder.ckpt  (waiting)  (记得改输出路径)
 
-    parser.add_argument('--mask_ratio', default=0.5, type=float)  # 0.5
+    parser.add_argument('--mask_ratio', default=0.25, type=float)  # 0.5
     parser.add_argument('--alpha', default=0.1, type=float, help="alpha is structure weight scaling factor")  # 0.5
     # parser.add_argument('--dataset', default="UCF-Crime", choices=['UCF-Crime', 'TAD', 'ShanghaiTech'], type=str)
     parser.add_argument('--use_depth', default=True, type=bool, help="use structure pooling")
@@ -530,9 +535,10 @@ def get_run_args():
     # parser.add_argument('--output_dir',default="/home/ma-user/work/features/SHT_9-5_9-1_finetune_AISO_0.5",type=str)
     # UCF-Crime
     parser.add_argument('--dataset', default="UCF-Crime", choices=['UCF-Crime', 'TAD', 'ShanghaiTech'], type=str)
-    parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/ucf_crime/frames", type=str)
+    # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/ucf_crime/frames", type=str)
+    parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/ucf_crime_less4/frames", type=str)
     parser.add_argument('--output_dir',
-                        default="/home/ma-user/work/features/UCF_9-1_finetune_DT_SP",  # test
+                        default="/home/ma-user/work/features/UCF_9-5_9-1_finetune_DT0.25_SPa0.1/less3",  # test
                         type=str)
 
     # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/ucf_crime_less4/frames", type=str)
@@ -552,7 +558,7 @@ def get_run_args():
     # TAD
     # parser.add_argument('--dataset', default="TAD", choices=['UCF-Crime', 'TAD', 'ShanghaiTech'], type=str)
     # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/TAD/frames", type=str)
-    # parser.add_argument('--output_dir', default="/home/ma-user/work/features/9-1_pretrain_DT_SP",
+    # parser.add_argument('--output_dir', default="/home/ma-user/work/features/test",
     #                     type=str)  # test
 
     parser.add_argument('--use_parallel', default=True, type=bool)  # True / Falses
@@ -589,8 +595,8 @@ if __name__ == '__main__':
 
     task_list = Task_collector.get_video_list_with_framenum_continue(run_args.input_dir, run_args.output_dir)
     # processor_tasks, load_difference, max_load = Task_collector.assign_tasks(task_list,processors=device_num)  # result: 2d task list
-    processor_tasks, load_difference, max_load = Task_collector.assign_tasks(task_list,processors=8)  # result: 2d task list
-
+    processor_tasks, load_difference, max_load = Task_collector.assign_tasks(task_list,
+                                                                             processors=8)  # result: 2d task list
 
     print(f"max load:{max_load},max load diff：{load_difference}")
 

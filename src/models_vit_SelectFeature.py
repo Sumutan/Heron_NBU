@@ -1,3 +1,9 @@
+"""
+特征选择版本的vit
+与原先对于所有输出token做平均池化不同（B,N,C）->(N,1,C)
+修改N个特征的融合方式以替代平均池化
+"""
+
 import time
 from functools import partial
 
@@ -11,7 +17,19 @@ from mindspore.common.initializer import (Normal, One, TruncatedNormal,
 
 import src.video_vit as video_vit
 
-context.set_context(mode=context.GRAPH_MODE)
+# context.set_context(mode=context.GRAPH_MODE)
+
+
+class Feature_selector(nn.Cell):
+    def __init__(self,
+                 input_dim=768):
+        pass
+
+    def construct(self,x):  # x:[B,N,C]
+        '''
+        :param x: inout feature [B,N,C]
+        :return: selected feature [B,1,C]
+        '''
 
 
 class VisionTransformer(nn.Cell):
@@ -386,7 +404,11 @@ class VisionTransformer_v2(nn.Cell):
         x = self.norm(x)
 
         if self.cls_token is None:  # self.fc_norm is not None mean use_mean_pooling=True
-            return self.fc_norm(x.mean(1))
+
+
+            x_selected=x[:, 0]
+            return x_selected
+            # return self.fc_norm(x.mean(1))
         else:
             return x[:, 0]
 
@@ -412,7 +434,7 @@ class VisionTransformer_v2(nn.Cell):
 
 
 def mae_vit_base_patch16():
-    model = VisionTransformer(
+    model = VisionTransformer_v2(
         patch_size=16,
         embed_dim=768,
         depth=12,
@@ -422,43 +444,3 @@ def mae_vit_base_patch16():
     )
     return model
 
-
-def mae_vit_large_patch16():
-    model = VisionTransformer(
-        patch_size=16,
-        embed_dim=1024,
-        depth=24,
-        num_heads=16,
-        mlp_ratio=4,
-        norm_layer=partial(nn.LayerNorm, epsilon=1e-6),
-    )
-    return model
-
-
-def mae_vit_huge_patch14():
-    model = VisionTransformer(
-        patch_size=14,
-        embed_dim=1280,
-        depth=32,
-        num_heads=16,
-        mlp_ratio=4,
-        norm_layer=partial(nn.LayerNorm, epsilon=1e-6),
-    )
-    return model
-
-
-def mae_vit_test():
-    model = VisionTransformer(
-        patch_size=16,
-        embed_dim=768,
-        depth=1,
-        num_heads=1,
-
-        decoder_embed_dim=512,
-        decoder_depth=1,
-        decoder_num_heads=1,
-
-        mlp_ratio=4,
-        norm_layer=partial(nn.LayerNorm, epsilon=1e-6),
-    )
-    return model

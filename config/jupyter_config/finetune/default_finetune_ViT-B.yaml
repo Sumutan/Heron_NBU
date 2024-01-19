@@ -4,7 +4,7 @@ seed: 2022
 use_parallel: False
 parallel_mode: "DATA_PARALLEL"
 device_id: 0
-mode: "GRAPH_MODE" # "PYNATIVE_MODE" "GRAPH_MODE"
+mode: "PYNATIVE_MODE" # "PYNATIVE_MODE" "GRAPH_MODE"
 device_target: "Ascend"
 max_call_depth: 10000
 save_graphs: False
@@ -15,7 +15,7 @@ eval: True
 test: False
 
 # 数据集参数
-path_to_data_dir: '/home/ma-user/work/dataset/k400-full'
+path_to_data_dir: '/home/ma-user/work/dataset/k400-full/k400_2w_csv'
 num_classes: 400
 num_workers: 1
 sampling_rate: 4
@@ -83,7 +83,7 @@ layer_decay: 0.7
 resume: ""
 
 # 训练参数
-batch_size: 4  # 16node
+batch_size: 8  # 16node
 epochs: 75
 per_step_size: 0
 accum_iter: 1
@@ -109,7 +109,7 @@ loss_scale: 1024
 use_dynamic_loss_scale: True
 
 # 保存模型
-use_ckpt: ""
+use_ckpt: "/home/ma-user/work/ckpt/9-5_9-1_finetune.ckpt"
 save_ckpt_epochs: 10
 prefix: 'model'
 save_dir: './output/'

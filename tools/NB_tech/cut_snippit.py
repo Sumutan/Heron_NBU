@@ -147,8 +147,8 @@ def video_snipping_multiprocess(input, frame=64, resize=(565, 320)):
 if __name__ == '__main__':
     # video_folder = r"E:\tmp\NBUabnormal"
     # output_folder = r"E:\tmp\NBUabnormal_out"
-    video_folder = r"/media/lizi/My Passport/NBUabnormal"
-    output_folder = r"/media/lizi/My Passport/NBUabnormal_snippets_test"
+    video_folder = r"/Users/sh/Desktop/ms_MAE/风华苍鹭项目部署/数据集"
+    output_folder = r"/Users/sh/Desktop/ms_MAE/风华苍鹭项目部署/output"
 
 
     video_files = get_video_files(video_folder)

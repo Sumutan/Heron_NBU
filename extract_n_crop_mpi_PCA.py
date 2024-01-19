@@ -21,9 +21,9 @@ from utils_mae.config_parser import get_config
 from utils_mae.helper import cloud_context_init
 from utils_mae.logger import get_logger
 from mindspore.train.serialization import load_checkpoint, load_param_into_net
-from src import models_vit_feature
-from src import models_vit_feature_difToken_AISO as models_vit_feature_difToken
-from src.video_dataset_new import MaskMapGenerator
+# from src import models_vit_feature
+from src.models_vit_feature_NoPoolingNoCLS import VisionTransformer_v2
+from src.Batch_PCA import Batch_PCA,Batch_KMeans
 
 import mindspore.ops as ops
 import numpy as np
@@ -72,8 +72,7 @@ def downloadmodel(use_ckpt, use_parallel, args):
     args.logger = get_logger(args.save_dir)
     # create model
     args.logger.info("Create model...")
-    # model = models_vit_feature.VisionTransformer_v2(**vars(args))
-    model = models_vit_feature_difToken.VisionTransformer_v2(**vars(args))
+    model = VisionTransformer_v2(**vars(args))
     size = ops.Size()
     n_parameters = sum(size(p) for p in model.trainable_params() if p.requires_grad)
     args.logger.info("number of params: {}".format(n_parameters))
@@ -169,14 +168,32 @@ def oversample_data_1crop(video_data, target_size=(224, 224, 3)):  # (39, 16, 22
     return [resized_data]
 
 
-def forward_batch(b_data, net, ids_keep=None):  # b_data:b,c,t,h,w
+def forward_batch(b_data, net):
     b_data = b_data.transpose([0, 4, 1, 2, 3])
     b_data = Tensor(b_data)  # b,c,t,h,w  # bx3x16x224x224
-    if ids_keep is not None:
-        ids_keep = Tensor(ids_keep)  # B, L_keep, C
-    b_features = net(b_data, ids_keep)
+    b_features = net(b_data, None)
     b_features = b_features.asnumpy()
-    return b_features
+    # output=np.mean(b_features, axis=1, keepdims=True)  # [B,1,C]
+
+    # start = time.time()
+
+    # PCA特征汇聚，不能跑多卡并行，sklearn库有bug会导致推理速度慢的离谱
+    # pca=Batch_PCA(n_components=16)
+    # output=pca.batch_fit_transform(b_features)  # [B,32,C]
+    # output=np.mean(output, axis=1, keepdims=True)  # [B,1,C]
+    # del pca
+
+    kmeans=Batch_KMeans(n_components=8, max_iter=300,batch_size=256)
+    output=kmeans.batch_fit_transform(b_features)  # [B,4,C]
+    output=np.mean(output, axis=1, keepdims=True)  # [B,1,C]
+    del kmeans
+
+    # end = time.time()
+    # print("Transformed Data:")
+    # print(output.shape)
+    # print("PCA fit_transform Time:", end - start)
+
+    return output
 
 
 def assign_tasks(tasks, processors=8):
@@ -238,10 +255,9 @@ def get_video_list_with_framenum_continue(input_dir, output_dir):  # 搜集未�
 
 
 def run(args_item):
-    video_dir, output_dir, batch_size, crop_num, dataset, mask_ratio = args_item
+    video_dir, output_dir, batch_size, crop_num, dataset = args_item
     chunk_size = 16
     frequency = 16
-    maskMapGenerator = MaskMapGenerator(patch_num=14, mask_ratio=mask_ratio)  # mask_ratio：0.5(best)/0.9/0.75
     video_name = video_dir.split("/")[-1]
     save_file = '{}_{}.npy'.format(video_name, "videomae")
     if save_file in os.listdir(os.path.join(output_dir)):
@@ -254,12 +270,14 @@ def run(args_item):
         rgb_files.sort(key=lambda x: int(x.split("_")[1].split(".")[0]))  # ucf
     elif dataset == "TAD":
         rgb_files.sort(key=lambda x: int(x.split(".")[0]))  # TAD
-
-    # the number of chunnks that can be formed from the images in the folder.
-    # If there are not enough images, copy the last frames to fill the gap.
     frame_cnt = len(rgb_files)
+
     assert (frame_cnt > chunk_size), print("{} has not enough frames".format(video_dir))
+
+    # 对不能取整的最后一块以最后一帧填充
+    # the number of chunnks that can be formed from the images in the folder.
     clipped_cnt = math.ceil(frame_cnt / chunk_size)
+    # If there are not enough images, copy the last frames to fill the gap.
     copy_length = (clipped_cnt * frequency) - frame_cnt
     if copy_length != 0:
         copy_imgs = [rgb_files[frame_cnt - 1]] * copy_length
@@ -278,51 +296,25 @@ def run(args_item):
     full_features = [[] for i in range(crop_num)]
 
     for batch_id in tqdm(range(batch_num)):
-        # start = time.time()
+        # start=time.time()
         batch_data = load_rgb_batch(video_dir, rgb_files, frame_indices[batch_id])
         batch_data_n_crop = []
         if crop_num == 1:
             batch_data_n_crop = oversample_data_1crop(batch_data)
         elif crop_num == 10:
-            batch_data_n_crop = oversample_data(batch_data)  # batch_data_n_crop ：[crop,b,r,h,w,c]
-        batch_data_n_crop_unnormalized = []  # 存放未归一化的原图
-        for normalized_data in batch_data_n_crop:
-            batch_data_n_crop_unnormalized.append(((normalized_data + 1) * (255 / 2)).astype(np.float32))  # 逆归一化操作
+            batch_data_n_crop = oversample_data(batch_data)
         # end = time.time()
         # tqdm.write(f'DataPrepare_timecost:{end - start}s')
 
-        # start = time.time()
-        for i in range(crop_num):  # b,t,h,w,c
-            assert (batch_data_n_crop[i].shape[-2] == 224) and (batch_data_n_crop[i].shape[-3] == 224)
-            # 取得灰度图
-            frames_gray = maskMapGenerator.rgb_to_gray_cv2(
-                batch_data_n_crop_unnormalized[i])  # frames_gray: b, t, h, w, c
-            frames_gray = np.squeeze(frames_gray)
-            mask_prob = []
-            b, t, h, w = frames_gray.shape
-            for j in range(b):
-                # mask_prob.append(maskMapGenerator.mask_probability_single(frames_gray[j],random_crop=False))
-                mask_prob.append(
-                    maskMapGenerator.mask_probability_single_dinamic_token(frames_gray[j], random_crop=False))
-            mask_prob = np.array(mask_prob)  # (b,t,14,14)
-
-            ids_keep = []
-            for j in range(b):
-                _mask, _ids_restore, _ids_keep, _ids_mask = \
-                    maskMapGenerator.mask_probability_generator(mask_prob_frame=mask_prob[j], mask_prob_depth=None)
-                ids_keep.append(_ids_keep)
-            ids_keep = np.array(ids_keep)  # ids_keep : B, L_keep, C
-
-            # infer_start = time.time()
-            full_features[i].append(forward_batch(batch_data_n_crop[i], model, ids_keep))
-            # infer_end = time.time()
-            # if i == 0: tqdm.write(f'Infer1Crop_timecost:{infer_end - infer_start}s')
-
-            # full_features[i].append(forward_batch(batch_data_n_crop[i], model))
+        # start=time.time()
+        for i in range(crop_num):
+            assert (batch_data_n_crop[i].shape[-2] == 224)
+            assert (batch_data_n_crop[i].shape[-3] == 224)
+            full_features[i].append(forward_batch(batch_data_n_crop[i], model))
         # end = time.time()
-        # tqdm.write(f'Inference_timecost:{end - start}s')
+        # tqdm.write(f'Inference_timecost:{end-start}s')
 
-    full_features = [np.concatenate(i, axis=0) for i in full_features]  # 合并batch
+    full_features = [np.concatenate(i, axis=0) for i in full_features]
     full_features = [np.expand_dims(i, axis=0) for i in full_features]
     full_features = np.concatenate(full_features, axis=0)  # 合并crop
     np.save(os.path.join(output_dir, save_file), full_features)
@@ -331,33 +323,35 @@ def run(args_item):
         video_name, frame_cnt, clipped_cnt, full_features.shape))
 
 
+
 def get_run_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', default="rgb", type=str)
     parser.add_argument('--use_ckpt',
-                        default="/home/ma-user/work/ckpt/9-5_9-1_finetune.ckpt",
-                        type=str)
-    parser.add_argument('--mask_ratio', default=0.5, type=float)
-    parser.add_argument('--dataset', default="TAD", choices=['UCF-Crime', 'TAD', 'ShanghaiTech', 'XD_violence'],
+                        default="/home/ma-user/work/ckpt/9-5_9-1_finetune.ckpt",  # 9-5_9-1_finetune.ckpt/extracted/11-1_10-15_finetune_L.ckpt
                         type=str)
 
     # ShanghaiTech
+    # parser.add_argument('--dataset', default="ShanghaiTech", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
     # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/ShanghaiTech/frames", type=str)
-    # parser.add_argument('--output_dir',default="/home/ma-user/work/features/SHT_9-5_9-1_finetune_AISO_0.5",type=str)
+    # parser.add_argument('--output_dir',default="/home/ma-user/work/features/SHT_9-5_9-1_finetune",type=str)
     # UCF-Crime
+    # parser.add_argument('--dataset', default="UCF-Crime", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
     # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/ucf_crime/frames", type=str)
     # parser.add_argument('--output_dir',
-    #                     default="/home/ma-user/work/features/UCF_9-5_9-1_finetune_AISO_0,4",  # test
+    #                     default="/home/ma-user/work/features/UCF_11-1_10-15_finetune_L",
     #                     type=str)
     # XD-Violence
-    parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/XD-Violence/test/frames", type=str)
-    parser.add_argument('--output_dir',
-                        default="/home/ma-user/work/features/featureTest/test",
-                        type=str)
-    # TAD
-    # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/TAD/frames", type=str)
-    # parser.add_argument('--output_dir', default="/home/ma-user/work/features/test",  # test
+    # parser.add_argument('--dataset', default="XD-Violence", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
+    # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/XD-Violence/train/frames", type=str)
+    # parser.add_argument('--output_dir',
+    #                     default="/home/ma-user/work/features/XD_9-5_9-1_finetune/train",
     #                     type=str)
+    # TAD
+    parser.add_argument('--dataset', default="TAD", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
+    parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/TAD/frames", type=str)
+    parser.add_argument('--output_dir', default="/home/ma-user/work/features/TAD_9-5_9-1_finetune_KMeans_8centers",  # test
+                        type=str)
 
     parser.add_argument('--use_parallel', default=True, type=bool)  # True / False
     parser.add_argument('--crop_num', type=int, default=10, choices=[1, 10])  # 1/10
@@ -365,7 +359,7 @@ def get_run_args():
     parser.add_argument('--sample_mode', default="oversample", type=str)
     parser.add_argument('--frequency', type=int, default=16)
     parser.add_argument('--config_file', type=str,
-                        default="config/jupyter_config/finetune/finetune_ViT-B-eval_copy.yaml")
+                        default="config/jupyter_config/finetune/finetune_ViT-B-eval_copy.yaml") # finetune_ViT-L-eval.yaml / finetune_ViT-B-eval_copy.yaml
 
     run_args = parser.parse_args()
 
@@ -374,9 +368,12 @@ def get_run_args():
 
 if __name__ == '__main__':
     run_args = get_run_args()
+    os.makedirs(run_args.output_dir, exist_ok=True)
 
     model, local_rank, device_id, device_num = downloadmodel(use_ckpt=run_args.use_ckpt,
                                                              use_parallel=run_args.use_parallel, args=run_args)
+    local_rank, device_id, device_num = 0,0,1 # mae-B
+
     print(f"local_rank:{local_rank}, device_id:{device_id},device_num:{device_num}")
 
     task_list = get_video_list_with_framenum_continue(run_args.input_dir, run_args.output_dir)
@@ -389,7 +386,7 @@ if __name__ == '__main__':
     local_task_list = task_list[local_rank]
 
     nums = len(local_task_list)
-    dataset, mask_ratio = run_args.dataset, run_args.mask_ratio
+    dataset = run_args.dataset
     for inputs in zip(local_task_list, [run_args.output_dir] * nums, [run_args.batch_size] * nums,
-                      [run_args.crop_num] * nums, [dataset] * nums, [mask_ratio] * nums):
+                      [run_args.crop_num] * nums, [dataset] * nums):
         run(inputs)

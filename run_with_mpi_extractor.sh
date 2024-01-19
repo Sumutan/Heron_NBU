@@ -40,9 +40,19 @@ cd ./device
 set +e  #命令执行失败继续执行下一条
 
 #用于UCF-Crime/TAD/ShanghaiTech特征提取  #记得进代码改运行配置
-mpirun -n 8 python ./extract_n_crop_mpi.py
+#mpirun -n 8 python ./extract_n_crop_mpi_PCA.py
+#export SKLEARN_SITE_JOBLIB=4
+#mpirun -n 8 python ./caogao.py
+#mpirun -n 4 python ./PCA_test.py
+#mpirun -np 8 --bind-to core python ./PCA_test.py
+
+#mpirun -n 8 --bind-to core python ./extract_n_crop_mpi_PCA.py
+#mpirun -n 4 python ./extract_n_crop_mpi_PCA.py
+
+#mpirun -n 8 python ./extract_n_crop_mpi.py
 #mpirun -n 8 python ./extract_n_crop_mpi_defToken.py
 #mpirun -n 8 python ./extract_n_crop_mpi_DT_SP.py
+mpirun -n 8 python ./extract_n_crop_mpi_GroupLayer.py
 
 #9-5 AISO UCF 1crop
 #mpirun -n 8 python ./extract_n_crop_mpi_defToken.py --dataset=UCF-Crime --mask_ratio=0.5 --crop_num=1 \
@@ -75,7 +85,6 @@ mpirun -n 8 python ./extract_n_crop_mpi.py
 #}
 #
 #extract_XD_feature
-
 
 
 

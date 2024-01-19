@@ -1,8 +1,9 @@
+#NJUvideoMAE-B finetune 阶段默认配置文件，除添加功能外不允许对参数做修改
 # mindspore参数
 seed: 2022
-use_parallel: True
+use_parallel: True #True/False
 parallel_mode: "DATA_PARALLEL"
-#device_id: 1
+device_id: 0
 mode: "GRAPH_MODE" # "PYNATIVE_MODE" "GRAPH_MODE"
 device_target: "Ascend"
 max_call_depth: 10000
@@ -14,10 +15,11 @@ eval: True
 test: False
 
 # 数据集参数
-path_to_data_dir: '/home/ma-user/work/dataset/k400-full'
+path_to_data_dir: '/home/ma-user/work/dataset/k400-full/k400_256'  # k400_256/k400-full
 num_classes: 400
 num_workers: 1
 sampling_rate: 4
+num_frames: 16
 train_crop_size: 224
 jitter_scales_relative: [0.5, 1.0]
 jitter_aspect_relative: [0.75, 1.3333]
@@ -66,22 +68,23 @@ t_patch_size: 2
 no_qkv_bias: False
 trunc_init: True
 sep_pos_embed: True
-cls_embed: True
-pred_t_dim: 8
+cls_embed: False   # False in NJU videoMAE ; if True ,Check use_mean_pooling is False
+use_mean_pooling: True   # if True ,Check cls_embed is False
+#pred_t_dim: 16
 drop_rate: 0.0
 attn_drop_rate: 0.0
 drop_path_rate: 0.2
 fc_drop_rate: 0.5
-freeze_encoder: False
-use_mean_pooling: True
+freeze_encoder: False #False
+
 init_scale: 0.001
 layer_decay: 0.7
 
 resume: ""
 
 # 训练参数
-batch_size: 8
-epochs: 100
+batch_size: 8  # 16node
+epochs: 20  #
 per_step_size: 0
 accum_iter: 1
 label_smoothing: 0.1
@@ -95,10 +98,10 @@ weight_decay_end: 0.0
 eps: 1.0e-8
 
 # 学习率参数
-base_lr: 5.0e-4
+base_lr: 1.0e-4      #5.0e-4
 start_learning_rate: 0.
-end_learning_rate: 1.0e-5
-warmup_epochs: 5
+end_learning_rate: 1.0e-5 #1.0e-5
+warmup_epochs: 3 #5
 warmup_steps: -1
 
 # 损失函数放缩
@@ -106,7 +109,7 @@ loss_scale: 1024
 use_dynamic_loss_scale: True
 
 # 保存模型
-use_ckpt: "model-75_523.ckpt"
-save_ckpt_epochs: 1 #3
+use_ckpt: "/home/ma-user/work/ckpt/9-5_9-1_finetune.ckpt" #GL-20e.ckpt/9-5_9-1_finetune.ckpt
+save_ckpt_epochs: 2
 prefix: 'model'
-save_dir: './output/' #'./output/' "/home/ma-user/modelarts/outputs/save_dir_0" 
+save_dir: './output/'

@@ -175,8 +175,8 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("MAE pre-training", add_help=False)
-    # parser.add_argument('--config_file', type=str, default="config/jupyter_config/finetune/default_finetune_ViT-B.yaml")
-    parser.add_argument('--config_file', type=str, default="default_finetune_ViT-B.yaml")
+    parser.add_argument('--config_file', type=str, default="config/jupyter_config/finetune/default_finetune_ViT-B.yaml")
+    # parser.add_argument('--config_file', type=str, default="config/jupyter_config/finetune/default_finetune_ViT-B_ddp.yaml")
     args = parser.parse_args()
     args = get_config(args.config_file)
 

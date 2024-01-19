@@ -30,6 +30,26 @@ PARALLEL_MODE = {"DATA_PARALLEL": context.ParallelMode.DATA_PARALLEL,
 MODE = {"PYNATIVE_MODE": context.PYNATIVE_MODE,
         "GRAPH_MODE": context.GRAPH_MODE}
 
+def parallel_init(args):
+    context_config = {
+        "mode": args.mode,
+        "device_target": args.device_target,
+        "device_id": args.device_id,
+        'max_call_depth': args.max_call_depth,
+        'save_graphs': args.save_graphs,
+    }
+    parallel_config = {
+        'parallel_mode': args.parallel_mode,
+        'gradients_mean': args.gradients_mean,
+    }
+    local_rank, device_id, device_num = cloud_context_init(seed=args.seed,
+                                                use_parallel=args.use_parallel,
+                                                context_config=context_config,
+                                                parallel_config=parallel_config)
+    print(f"local_rank: {local_rank}, device_num: {device_num}, device_id: {device_id}")
+    args.device_num = device_num
+    args.local_rank = local_rank
+    return local_rank, device_id, device_num
 
 def cloud_context_init(
         seed=0,

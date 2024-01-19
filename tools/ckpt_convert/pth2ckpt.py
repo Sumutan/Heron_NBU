@@ -18,17 +18,31 @@ import argparse
 import mindspore as ms
 import torch
 
-def get_keymap_txt(pth_file):
-    print("------get_keymap_txt------")
-    map_path = pth_file.split('.')[0] + '_key_map.txt'
-    map_file = open(map_path, 'w')
-    state_dict = torch.load(pth_file, map_location=torch.device('cpu'))
+def get_statedict(ckpt_file):
+    if ckpt_file.endswith('.ckpt'):
+        state_dict = ms.load_checkpoint(ckpt_file)
+    elif ckpt_file.endswith('.pth'):
+        state_dict = torch.load(ckpt_file, map_location=torch.device('cpu'))
+    else:
+        raise ValueError('Not support ckpt file: {}'.format(ckpt_file))
+
     if 'model_state' in state_dict:
         state_dict = state_dict['model_state']
     elif 'module' in state_dict:
         state_dict = state_dict['module']
     elif 'model' in state_dict:
         state_dict = state_dict['model']
+    else:
+        state_dict = state_dict
+
+    return state_dict
+
+
+def get_keymap_txt(pth_file):
+    print("------get_keymap_txt------")
+    map_path = pth_file.split('.')[0] + '_key_map.txt'
+    map_file = open(map_path, 'w')
+    state_dict = get_statedict(pth_file)
     
     for k in state_dict:
         new_k = k

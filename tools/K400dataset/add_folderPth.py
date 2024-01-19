@@ -3,8 +3,10 @@ import os
 # 原始的txt文件路径
 # input_file = 'E:/tmp/k400_full/kinetics400_train_list_videos.txt'
 # input_file = 'E:/tmp/k400_full/kinetics400_val_list_videos.txt'
-input_file ='/home/ma-user/work/dataset/k400-full/kinetics400_train_list_videos.txt'
+# input_file ='/home/ma-user/work/dataset/k400-full/kinetics400_train_list_videos.txt'
 # input_file = '/home/ma-user/work/dataset/k400-full/kinetics400_val_list_videos.txt'
+input_file ='/home/ma-user/work/dataset/k400-full/train1.csv'
+# input_file = '/home/ma-user/work/dataset/k400-full/val.csv'
 
 # 新的txt文件路径
 # output_file = 'E:/tmp/k400_full/train.csv'
@@ -25,8 +27,12 @@ with open(input_file, 'r') as f_in, open(output_file, 'w') as f_out:
     # 逐行读取原始文件中的内容
     for line in f_in:
         # 去掉行末的换行符
-        line = line.strip().replace(',', ' ')  # txt to csv
+        # line = line.strip().replace(',', ' ')  # txt to csv
         # 将文件路径前缀和行内容拼接在一起，并写入新文件中
-        f_out.write(os.path.join(prefix, line).replace('\\', '/') + '\n')
+        # f_out.write(os.path.join(prefix, line).replace('\\', '/') + '\n')
+
+        line=line.replace('/home/ma-user/modelarts/inputs/data_dir_0/','/home/ma-user/work/dataset/k400-full/')
+        f_out.write(line + '\n')
+
         acc+=1
 print(f"处理{acc}条记录")

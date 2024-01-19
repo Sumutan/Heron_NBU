@@ -1,6 +1,6 @@
 # mindspore参数
 seed: 2022
-use_parallel: True #True
+use_parallel: True #True/False
 device_id: 0
 mode: "GRAPH_MODE" # "PYNATIVE_MODE" "GRAPH_MODE"
 device_target: "Ascend"
@@ -108,7 +108,7 @@ loss_scale: 1024
 use_dynamic_loss_scale: True
 
 # 保存模型
-use_ckpt: "/home/ma-user/work/ckpt/finetune_pretrain_with_RandomMaskinK400-100_457.ckpt"
+use_ckpt: "/home/ma-user/work/ckpt/9-5_9-1_finetune.ckpt"
 save_ckpt_epochs: 3
 prefix: 'model'
 save_dir: './output/'

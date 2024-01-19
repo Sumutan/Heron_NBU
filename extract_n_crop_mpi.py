@@ -12,6 +12,7 @@ frames_folder/
 """
 
 import os
+import time
 from tqdm import tqdm
 import argparse
 from PIL import Image
@@ -272,18 +273,23 @@ def run(args_item):
     full_features = [[] for i in range(crop_num)]
 
     for batch_id in tqdm(range(batch_num)):
+        # start=time.time()
         batch_data = load_rgb_batch(video_dir, rgb_files, frame_indices[batch_id])
-
         batch_data_n_crop = []
         if crop_num == 1:
             batch_data_n_crop = oversample_data_1crop(batch_data)
         elif crop_num == 10:
             batch_data_n_crop = oversample_data(batch_data)
+        # end = time.time()
+        # tqdm.write(f'DataPrepare_timecost:{end - start}s')
 
+        # start=time.time()
         for i in range(crop_num):
             assert (batch_data_n_crop[i].shape[-2] == 224)
             assert (batch_data_n_crop[i].shape[-3] == 224)
             full_features[i].append(forward_batch(batch_data_n_crop[i], model))
+        # end = time.time()
+        # tqdm.write(f'Inference_timecost:{end-start}s')
 
     full_features = [np.concatenate(i, axis=0) for i in full_features]
     full_features = [np.expand_dims(i, axis=0) for i in full_features]
@@ -298,26 +304,19 @@ def get_run_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', default="rgb", type=str)
     parser.add_argument('--use_ckpt',
-                        default="/home/ma-user/work/ckpt/extracted/9-1_pretrain_frame_with_depth_add_loss_on_surveillance_20w_change_encoder.ckpt",  # 9-5_9-1_finetune.ckpt/11-1_10-15_finetune_L.ckpt
+                        default="/home/ma-user/work/ckpt/extracted/11-1_10-15_finetune_L.ckpt",  # 9-5_9-1_finetune.ckpt/11-1_10-15_finetune_L.ckpt
                         type=str)
-        # finetune_pretrain_with_RandomMaskinK400-100_457.ckpt
-        # 8-12_finetune-8-10_8-8_k400_with_surveillancel-100_469.ckpt
-        # 8-17_8-15_finetune_random_on_surveillance_20w_k400.ckpt
-
-        # finetune-400_frame_with_depth_add_loss_on_surveillance_20w.ckpt
-        # 9-1_pretrain_frame_with_depth_add_loss_on_surveillance_20w_change_encoder.ckpt  (waiting)
-
 
     # ShanghaiTech
     # parser.add_argument('--dataset', default="ShanghaiTech", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
     # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/ShanghaiTech/frames", type=str)
     # parser.add_argument('--output_dir',default="/home/ma-user/work/features/SHT_9-5_9-1_finetune",type=str)
     # UCF-Crime
-    # parser.add_argument('--dataset', default="UCF-Crime", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
-    # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/ucf_crime/frames", type=str)
-    # parser.add_argument('--output_dir',
-    #                     default="/home/ma-user/work/features/10-13_10-4_finetune",
-    #                     type=str)
+    parser.add_argument('--dataset', default="UCF-Crime", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
+    parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/ucf_crime/frames", type=str)
+    parser.add_argument('--output_dir',
+                        default="/home/ma-user/work/features/UCF_11-1_10-15_finetune_L",
+                        type=str)
     # XD-Violence
     # parser.add_argument('--dataset', default="XD-Violence", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
     # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/XD-Violence/train/frames", type=str)
@@ -325,10 +324,10 @@ def get_run_args():
     #                     default="/home/ma-user/work/features/XD_9-5_9-1_finetune/train",
     #                     type=str)
     # TAD
-    parser.add_argument('--dataset', default="TAD", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
-    parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/TAD/frames", type=str)
-    parser.add_argument('--output_dir', default="/home/ma-user/work/features/9-1_pretrain.ckpt",  # test
-                        type=str)
+    # parser.add_argument('--dataset', default="TAD", choices=['UCF-Crime', 'TAD', 'ShanghaiTech',"XD-Violence"], type=str)
+    # parser.add_argument('--input_dir', default="/home/ma-user/work/dataset/TAD/frames", type=str)
+    # parser.add_argument('--output_dir', default="/home/ma-user/work/features/test",  # test
+    #                     type=str)
 
     parser.add_argument('--use_parallel', default=True, type=bool)  # True / False
     parser.add_argument('--crop_num', type=int, default=10, choices=[1, 10])  # 1/10
@@ -336,7 +335,7 @@ def get_run_args():
     parser.add_argument('--sample_mode', default="oversample", type=str)
     parser.add_argument('--frequency', type=int, default=16)
     parser.add_argument('--config_file', type=str,
-                        default="config/jupyter_config/finetune/finetune_ViT-B-eval_copy.yaml") # finetune_ViT-L-eval.yaml / finetune_ViT-B-eval_copy.yaml
+                        default="config/jupyter_config/finetune/finetune_ViT-L-eval.yaml") # finetune_ViT-L-eval.yaml / finetune_ViT-B-eval_copy.yaml
 
     run_args = parser.parse_args()
 
@@ -356,8 +355,7 @@ if __name__ == '__main__':
     processor_tasks, load_difference, max_load = assign_tasks(task_list, processors=device_num)  # result: 2d task list
     print(f"max load:{max_load},max load diff：{load_difference}")
 
-    # 使用嵌套的列表推导式提取每个元组
-    # 的第一个元素
+    # 使用嵌套的列表推导式提取每个元组的第一个元素
     task_list = [[item[0] for item in sublist] for sublist in processor_tasks]
     local_task_list = task_list[local_rank]
 

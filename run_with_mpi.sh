@@ -33,12 +33,15 @@ cd ./device
 #mpirun --allow-run-as-root -n 4 python ./run_finetune_eval.py
 # mpirun --allow-run-as-root -n 4 python ./run_finetune_test.py
 # mpirun --allow-run-as-root -n 8 python ./run_finetune_abn.py
+ mpirun --allow-run-as-root -n 8 python ./run_finetune_GroupLayer.py
+
+
 #特征提取
-set +e  #命令执行失败继续执行下一条
+#set +e  #命令执行失败继续执行下一条
 #用于UCF-Crime/TAD/ShanghaiTech特征提取  #记得进代码改运行配置
 #mpirun -n 8 python ./extract_n_crop_mpi.py
 #mpirun -n 8 python ./extract_n_crop_mpi_defToken.py
-mpirun -n 8 python ./extract_n_crop_mpi_DT_SP.py
+#mpirun -n 8 python ./extract_n_crop_mpi_DT_SP.py
 #9-5 AISO UCF 1crop
 #mpirun -n 8 python ./extract_n_crop_mpi_defToken.py --dataset=UCF-Crime --mask_ratio=0.5 --crop_num=1 \
 #--use_ckpt=/home/ma-user/work/ckpt/9-5_9-1_finetune.ckpt \
